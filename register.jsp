@@ -1,5 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
 <%@ page import="java.sql.Connection" %>
 <%@ page import="java.sql.DriverManager" %>
 <%@ page import="java.sql.PreparedStatement" %>
@@ -14,22 +14,39 @@
     try {
         Class.forName("com.mysql.cj.jdbc.Driver");
         conn = DriverManager.getConnection(Url, Username, Password);
-
         if (conn != null) {
-           int id = Integer.parseInt(request.getParameter("id"));
-            String updateQuery = "UPDATE Data SET ApplicantStatus= 'Approved' WHERE id = ?";
-            pst = conn.prepareStatement(updateQuery);
-            pst.setInt(1, id);
-            int row = pst.executeUpdate();
-            if (row > 0)
-            {
-                out.println("<script>alert('Application approved successfully!'); window.location.href = 'dashboard.jsp';</script>");
-            } else
-            {
-                out.println("<script>alert('Failed to approve the application.'); window.location.href = 'dashboard.jsp';</script>");
-            }
+            String name = request.getParameter("name");
+            String roll = request.getParameter("roll");
+            String dept = request.getParameter("dept");
+            String email = request.getParameter("email");
+            String dob = request.getParameter("dob");
+            String sport = request.getParameter("sport");
+            String ach = request.getParameter("ach");
+
+            String query = "INSERT INTO Data(F_name, University, Department, Email, DOB, Sports, Achivement, ApplicantStatus) VALUES(?,?,?,?,?,?,?,?)";
+            pst = conn.prepareStatement(query);
+            pst.setString(1, name);
+            pst.setString(2, roll);
+            pst.setString(3, dept);
+            pst.setString(4, email);
+            pst.setString(5, dob);
+            pst.setString(6, sport);
+            pst.setString(7, ach);
+            pst.setString(8, "Application Pending");
+            pst.executeUpdate();
+%>
+            <h1>Thanks for your enrollment!</h1>
+            <hr>
+            <h2>Wait for the approval</h2>
+            <a href="index.jsp">Click Here </a><h3>for home page</h3>
+            <a href="dashboard.jsp">Click Here </a><h3>to check status</h3>
+<%
         }
     } catch (Exception e) {
         e.printStackTrace();
+%>
+        <h1>Server temporarily down for maintenance. Try again later.</h1>
+        <a href="index.jsp">Click Here</a><h3>for home page</h3>
+<%
     }
 %>
